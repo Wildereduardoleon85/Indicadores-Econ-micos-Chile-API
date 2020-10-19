@@ -103,6 +103,7 @@ header h1{
     header{
         width: auto;
         background-size: auto;
+        padding: 2%;
     }
 
 
@@ -114,11 +115,16 @@ header h1{
     }
 
     .caja-dolar .display1 .dolar{
-        font-size: 3vh;
+        font-size: 4vh;
     }
 
     .caja-dolar .display1 div i{
-        font-size: 4vh;
+        font-size: 5vh;
+    }
+
+    .caja-dolar, 
+    .tabla{
+        width: 80%;
     }
 }
 

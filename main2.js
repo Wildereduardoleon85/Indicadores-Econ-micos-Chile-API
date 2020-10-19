@@ -1,60 +1,72 @@
 $(document).ready(()=>{
 
-    const format = (string)=>{
-
-        if(string.length > 3){
-
-            const parte1 = string.substr(0, (string.length - 3));
-            const parte2 = string.substr((string.length - 3), string.length )
-        
-            return(parte1 + '.' + parte2);
+    const formatNumber = {
+        separador: ".", // separador para los miles
+        sepDecimal: ',', // separador para los decimales
+        formatear:function (num){
+        num +='';
+        var splitStr = num.split('.');
+        var splitLeft = splitStr[0];
+        var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+        var regx = /(\d+)(\d{3})/;
+        while (regx.test(splitLeft)) {
+        splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
         }
-    };
-
-    const reemplazar = (str) =>{
-
-        return str.replace('.', ',');
-    }
-
+        return this.simbol + splitLeft +splitRight;
+        },
+        new:function(num, simbol){
+        this.simbol = simbol ||'';
+        return this.formatear(num);
+        }
+       }
 
     $.getJSON('https://mindicador.cl/api', function(data) {
-        const datos = data;
-
+        
+        const datos = data,
+              dolar = datos.dolar.valor,
+              euro = datos.euro.valor,
+              bitcoin = datos.bitcoin.valor,
+              imacec = datos.imacec.valor,
+              uf = datos.uf.valor,
+              ipc = datos.ipc.valor,
+              utm = datos.utm.valor;
+             
         const generar_valores = ()=>{
 
             $('#tipo-moneda').text('Dolar');
-            $('#valor-moneda').text(reemplazar(String(datos.dolar.valor)));
+            $('#valor-moneda').text(formatNumber.new(dolar));
             
             setTimeout(()=>{
                 $('#tipo-moneda').text('Euro');
-                $('#valor-moneda').text(reemplazar(String(datos.euro.valor)));
+                $('#valor-moneda').text(formatNumber.new(euro));
             }, 3000);
     
             setTimeout(()=>{
                 $('#tipo-moneda').text('Bitcoin');
-                $('#valor-moneda').text(reemplazar(String(datos.bitcoin.valor)));
+                $('#valor-moneda').text(formatNumber.new(bitcoin));
             }, 6000);
     
             setTimeout(()=>{
                 $('#tipo-moneda').text('Imacec');
-                $('#valor-moneda').text(reemplazar(String(datos.imacec.valor)));
+                $('#valor-moneda').text(formatNumber.new(imacec));
                 $('#icono').removeClass('fas fa-dollar-sign').addClass('fas fa-percentage');
             }, 9000);
     
             setTimeout(()=>{
                 $('#tipo-moneda').text(datos.ipc.codigo.toUpperCase())
-                $('#valor-moneda').text(reemplazar(String(datos.ipc.valor)))
+                $('#valor-moneda').text(formatNumber.new(ipc))
             }, 12000);
     
             setTimeout(()=>{
                 $('#icono').addClass('fas fa-dollar-sign');
                 $('#tipo-moneda').text(datos.uf.codigo.toUpperCase());
+                $('#valor-moneda').text(formatNumber.new(uf));
                 $('#icono').removeClass('fas fa-percentage').addClass('fas fa-dollar-sign');
             }, 15000);
     
             setTimeout(()=>{
                 $('#tipo-moneda').text(datos.utm.codigo.toUpperCase());
-                $('#valor-moneda').text(reemplazar(String(datos.utm.valor)));
+                $('#valor-moneda').text(formatNumber.new(utm));
             }, 18000);
 
         }
@@ -74,15 +86,13 @@ $(document).ready(()=>{
             
         });
 
-        $('#v_dolar').text(reemplazar(String(datos.dolar.valor)));
-        $('#v_euro').text(reemplazar(String(datos.euro.valor)));
-        $('#v_bitcoin').text(reemplazar(String(datos.bitcoin.valor)));
-        $('#v_imacec').text(reemplazar(String(datos.imacec.valor)));
-        $('#v_ipc').text(reemplazar(String(datos.ipc.valor)));
-        $('#v_uf').text(reemplazar(String(datos.uf.valor)));
-        $('#v_utm').text(reemplazar(String(datos.utm.valor)));
-
-      
+        $('#v_dolar').text(formatNumber.new(dolar));
+        $('#v_euro').text(formatNumber.new(euro));
+        $('#v_bitcoin').text(formatNumber.new(bitcoin));
+        $('#v_imacec').text(formatNumber.new(imacec));
+        $('#v_ipc').text(formatNumber.new(ipc));
+        $('#v_uf').text(formatNumber.new(uf));
+        $('#v_utm').text(formatNumber.new(utm));
 
     }).fail(function() {
         console.log('Error al consumir la API!');
